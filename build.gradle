@@ -1,13 +1,11 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
+    repositories { mavenCentral() }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$hs.kotlin.version"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$hs.spring.bootVersion"
-        classpath "io.spring.gradle:dependency-management-plugin:$hs.spring.dependencyManagementVersion"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$hs.kotlin.version"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:$hs.kotlin.version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$hsKotlinVersion"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$hsSpringBootVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:$hsSpringDependencyManagementVersion"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$hsKotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:$hsKotlinVersion"
     }
 }
 
@@ -22,7 +20,39 @@ repositories {
     mavenCentral()
 }
 
-sourceSets.main.resources.srcDirs = ["src/resources"]
+sourceSets {
+    main {
+        // si at Kotlin-koden er i src/engine
+        kotlin {
+            srcDirs = ['src/engine']
+        }
+        // si at ressursene ligger i src/resources
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+}
+
+// 2) Fortell Kotlin-plugin hvilken jvmTarget som gjelder
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+// 3) Helt eksplisitt: spring-boot-plugin vet hvilken main-klasse som skal brukes
+springBoot {
+    mainClass = 'engine.WebQuizEngineKt'
+}
+
+
+// 4) (Valgfritt, men trygger at manifestet får riktig Main-Class)
+tasks.named('bootJar') {
+    manifest {
+        attributes 'Main-Class': 'engine.WebQuizEngineKt'
+    }
+}
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
