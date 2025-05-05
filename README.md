@@ -1,6 +1,6 @@
 # Web Quiz Engine
 
-Et enkelt Spring Boot + Kotlin API for quiz.
+Et enkelt Spring Boot + Kotlin API for quiz. Utviklet for å bestå Hyperskills interne tester, legger til egne i framtiden.
 
 ## Kom i gang
 
