@@ -22,31 +22,26 @@ repositories {
 
 sourceSets {
     main {
-        // si at Kotlin-koden er i src/engine
         kotlin {
             srcDirs = ['src/engine']
         }
-        // si at ressursene ligger i src/resources
         resources {
             srcDirs = ['src/resources']
         }
     }
 }
 
-// 2) Fortell Kotlin-plugin hvilken jvmTarget som gjelder
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
-// 3) Helt eksplisitt: spring-boot-plugin vet hvilken main-klasse som skal brukes
 springBoot {
     mainClass = 'engine.WebQuizEngineKt'
 }
 
 
-// 4) (Valgfritt, men trygger at manifestet får riktig Main-Class)
 tasks.named('bootJar') {
     manifest {
         attributes 'Main-Class': 'engine.WebQuizEngineKt'
