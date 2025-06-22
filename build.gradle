@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
+    ext.kotlin_version = '2.1.21'
     repositories { mavenCentral() }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$hsKotlinVersion"
@@ -8,6 +9,7 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:$hsSpringDependencyManagementVersion"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$hsKotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$hsKotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -22,15 +24,20 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        kotlin {
-            srcDirs = ['src/engine']
-        }
-        resources {
-            srcDirs = ['src/resources']
-        }
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 tasks.withType(KotlinCompile).configureEach {
@@ -61,4 +68,12 @@ dependencies {
     runtimeOnly    'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.mockito', module: 'mockito-core'   // module er valgfritt
+    }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+
 }
