@@ -49,4 +49,5 @@ class QuizServiceTest {
         val result = quizService.checkAnswer(1)
         assertEquals(expected, result)
     }
+
 }
