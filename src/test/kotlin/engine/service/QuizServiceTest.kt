@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import engine.repository.QuizRepository
 import engine.repository.UserRepository
 import engine.repository.QuizCompletionsRepository
+import engine.service.QuizTestData.checkAnswerCorrectAnswer
+import engine.service.QuizTestData.expectedSampleQuiz
 import io.mockk.every
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -27,30 +29,24 @@ class QuizServiceTest {
     @OverrideMockKs
     private lateinit var quizService: QuizService
 
-    companion object {
-        fun expectedSampleQuiz(): QuizQuestionResponse = QuizQuestionResponse(
-                "The Java Logo",
-                "What is depicted on the Java logo?",
-                listOf("Robot", "Tea leaf", "Cup of coffee", "Bug"))
-
-        fun checkAnswerCorrectAnswer(): QuizResponse = QuizResponse(true, "Congratulations, you're right!")
-        fun checkAnswerWrongAnswer(): QuizResponse = QuizResponse(false, "Wrong answer! Please, try again.")
-    }
-
     @Test
     fun `getSampleQuiz should return the hardcoded sample response`() {
+        val expected = QuizTestData.expectedSampleQuiz()
         val result = quizService.getSampleQuiz()
-        assertEquals(expectedSampleQuiz(), result)
+        assertEquals(expected, result)
     }
 
     @Test
     fun `checkAnswer should response with correct answer`() {
+        val expected = QuizTestData.checkAnswerCorrectAnswer()
         val result = quizService.checkAnswer(2)
-        assertEquals(checkAnswerCorrectAnswer(), result)
+        assertEquals(expected, result)
     }
+
     @Test
     fun `checkAnswer response with wrong answer`() {
+        val expected = QuizTestData.checkAnswerWrongAnswer()
         val result = quizService.checkAnswer(1)
-        assertEquals(checkAnswerWrongAnswer(), result)
+        assertEquals(expected, result)
     }
 }
