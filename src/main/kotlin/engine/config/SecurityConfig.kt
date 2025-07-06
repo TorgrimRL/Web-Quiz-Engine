@@ -14,17 +14,24 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 class SecurityConfig(private val userDetailsService: UserDetailsService) {
 
-    @Bean
-    @Throws(Exception::class)
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.httpBasic(Customizer.withDefaults()).csrf { it.disable() }.authorizeHttpRequests { auth ->
-            auth.requestMatchers(HttpMethod.POST, "/api/register", "/actuator/shutdown").permitAll()
-                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll().anyRequest().authenticated()
+  @Bean
+  @Throws(Exception::class)
+  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    http
+        .httpBasic(Customizer.withDefaults())
+        .csrf { it.disable() }
+        .authorizeHttpRequests { auth ->
+          auth
+              .requestMatchers(HttpMethod.POST, "/api/register", "/actuator/shutdown")
+              .permitAll()
+              .dispatcherTypeMatchers(DispatcherType.ERROR)
+              .permitAll()
+              .anyRequest()
+              .authenticated()
         }
 
-        return http.build()
-    }
+    return http.build()
+  }
 
-    @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+  @Bean fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

@@ -12,9 +12,17 @@ data class Quiz(
     val title: String,
     val text: String,
     @ElementCollection(fetch = FetchType.EAGER) val options: List<String>,
-    @Fetch(value = FetchMode.SUBSELECT) @ElementCollection(fetch = FetchType.EAGER) @JsonIgnore val answer: List<Int>,
-    @ManyToOne(
-            fetch = FetchType.EAGER, optional = false) @JoinColumn(name = "user_id") @JsonIgnore var user: User? = null,
+    @Fetch(value = FetchMode.SUBSELECT)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JsonIgnore
+    val answer: List<Int>,
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    var user: User? = null,
     @OneToMany(
-            mappedBy = "quiz",
-              ) @JsonIgnore val completions: MutableList<QuizCompletion> = mutableListOf())
+        mappedBy = "quiz",
+    )
+    @JsonIgnore
+    val completions: MutableList<QuizCompletion> = mutableListOf()
+)

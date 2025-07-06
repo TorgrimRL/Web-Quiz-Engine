@@ -8,4 +8,5 @@ data class PostQuizRequest(
     @NotBlank val title: String?,
     @NotBlank val text: String?,
     @field:Size(min = 2) @NotNull val options: List<String>,
-    val answer: List<Int>?)
+    val answer: List<Int>?
+)

@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 interface QuizRepository : JpaRepository<Quiz, Int> {
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Quiz q WHERE q.id = :quizId AND q.user.id = :userId")
-    fun deleteByIdAndUserId(quizId: Int, userId: Int): Int
+  @Modifying
+  @Transactional
+  @Query("DELETE FROM Quiz q WHERE q.id = :quizId AND q.user.id = :userId")
+  fun deleteByIdAndUserId(quizId: Int, userId: Int): Int
 }

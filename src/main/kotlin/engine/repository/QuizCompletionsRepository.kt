@@ -13,10 +13,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface QuizCompletionsRepository : JpaRepository<QuizCompletion, Int> {
-    fun findQuizCompletionByUserOrderByCompletedAtDesc(user: User?, pageable: Pageable): Page<QuizCompletion>
+  fun findQuizCompletionByUserOrderByCompletedAtDesc(
+      user: User?,
+      pageable: Pageable
+  ): Page<QuizCompletion>
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM QuizCompletion qc WHERE qc.quiz = :quiz")
-    fun deleteAllByQuiz(quiz: Quiz): Int
+  @Modifying
+  @Transactional
+  @Query("DELETE FROM QuizCompletion qc WHERE qc.quiz = :quiz")
+  fun deleteAllByQuiz(quiz: Quiz): Int
 }

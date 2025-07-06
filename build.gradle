@@ -10,6 +10,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-allopen:$hsKotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$hsKotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:7.0.3"
     }
 }
 
@@ -19,6 +20,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: "kotlin-spring"
 apply plugin: "kotlin-jpa"
+apply plugin: "com.diffplug.spotless"
 
 repositories {
     mavenCentral()
@@ -71,9 +73,15 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.mockito', module: 'mockito-core'   // module er valgfritt
+        exclude group: 'org.mockito', module: 'mockito-core'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
 
+}
+spotless{
+    kotlin {
+        ktfmt("0.53")
+        targetExclude("build/**/*.kt")
+    }
 }

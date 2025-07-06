@@ -12,12 +12,32 @@ on:
 
 
 jobs:
+  lint:
+    name: Format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Kotlin Formatting check
+        run: ./gradlew spotlessCheck --no-daemon
+
+
+
+
 
   build:
+    needs: lint
     runs-on:
       ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Cache Gradle Dependencies
         uses: actions/cache@v4
         with:
@@ -28,13 +48,14 @@ jobs:
           restore-keys:
             ${{ runner.os }}-gradle-
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
-      - name: Build and test
+          cache: gradle
+      - name: Clean, Build and test
         run: ./gradlew clean build --no-daemon
+
         
 
 
