@@ -1,25 +1,18 @@
 package engine.service
 
-import engine.dto.QuizQuestionResponse
-import engine.dto.QuizResponse
 import engine.entity.Quiz
+import engine.repository.QuizCompletionsRepository
+import engine.repository.QuizRepository
+import engine.repository.UserRepository
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.OverrideMockKs
 import io.mockk.junit5.MockKExtension
-import org.junit.jupiter.api.extension.ExtendWith
-import engine.repository.QuizRepository
-import engine.repository.UserRepository
-import engine.repository.QuizCompletionsRepository
-import engine.service.QuizTestData.checkAnswerCorrectAnswer
-import engine.service.QuizTestData.expectedSampleQuiz
-import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertSame
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 

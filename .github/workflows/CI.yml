@@ -1,0 +1,40 @@
+# your-repo-name/.github/workflows/CI.yml
+
+name: First Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+
+  build:
+    runs-on:
+      ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          path:
+            ~/.gradle/caches
+            ~/.gradle/wrapper/
+          restore-keys:
+            ${{ runner.os }}-gradle-
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - name: Build and test
+        run: ./gradlew clean build --no-daemon
+        
+
+
