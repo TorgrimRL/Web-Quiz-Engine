@@ -16,7 +16,10 @@ class UserService(
 
   fun registerUser(request: RegistrationRequest) {
     if (userRepository.existsUserByEmail(request.email)) {
-      throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Mail already registered")
+      throw ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Mail already registered",
+      )
     }
     val hashed = passwordEncoder.encode(request.password)
     userRepository.save(User(email = request.email, password = hashed))
