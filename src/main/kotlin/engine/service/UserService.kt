@@ -21,7 +21,12 @@ class UserService(
           "Mail already registered",
       )
     }
-    val hashed = passwordEncoder.encode(request.password)
-    userRepository.save(User(email = request.email, password = hashed))
+    val hashedPassword = passwordEncoder.encode(request.password)
+    userRepository.save(
+        User(
+            email = request.email,
+            password = hashedPassword,
+        ),
+    )
   }
 }
