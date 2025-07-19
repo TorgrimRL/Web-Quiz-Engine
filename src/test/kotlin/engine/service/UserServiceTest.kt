@@ -19,45 +19,40 @@ import org.springframework.web.server.ResponseStatusException
 
 @ExtendWith(MockKExtension::class)
 class UserServiceTest {
-    @MockK
-    private lateinit var userRepository: UserRepository
+  @MockK private lateinit var userRepository: UserRepository
 
-    @MockK
-    private lateinit var passwordEncoder: PasswordEncoder
+  @MockK private lateinit var passwordEncoder: PasswordEncoder
 
-    @OverrideMockKs
-    private lateinit var userService: UserService
+  @OverrideMockKs private lateinit var userService: UserService
 
-    @Test
-    fun `registerUser should save new user with encoded password`() {
-        val request = RegistrationRequest("new@email.com", "password123")
-        val encodedPassword = "encodedPassword123"
+  @Test
+  fun `registerUser should save new user with encoded password`() {
+    val request = RegistrationRequest("new@email.com", "password123")
+    val encodedPassword = "encodedPassword123"
 
-        every { userRepository.existsUserByEmail(request.email) } returns false
-        every { passwordEncoder.encode(request.password) } returns encodedPassword
-        every { userRepository.save(any()) } answers { firstArg() }
+    every { userRepository.existsUserByEmail(request.email) } returns false
+    every { passwordEncoder.encode(request.password) } returns encodedPassword
+    every { userRepository.save(any()) } answers { firstArg() }
 
-        userService.registerUser(request)
+    userService.registerUser(request)
 
-        val userSlot = slot<User>()
-        verify(exactly = 1) { userRepository.save(capture(userSlot)) }
+    val userSlot = slot<User>()
+    verify(exactly = 1) { userRepository.save(capture(userSlot)) }
 
-        assertEquals(request.email, userSlot.captured.email)
-        assertEquals(encodedPassword, userSlot.captured.password)
-    }
+    assertEquals(request.email, userSlot.captured.email)
+    assertEquals(encodedPassword, userSlot.captured.password)
+  }
 
-    @Test
-    fun `registerUser should throw BAD_REQUEST when email already exists`() {
-        val request = RegistrationRequest("existing@email.com", "password123")
+  @Test
+  fun `registerUser should throw BAD_REQUEST when email already exists`() {
+    val request = RegistrationRequest("existing@email.com", "password123")
 
-        every { userRepository.existsUserByEmail(request.email) } returns true
+    every { userRepository.existsUserByEmail(request.email) } returns true
 
-        val exception = assertThrows<ResponseStatusException> {
-            userService.registerUser(request)
-        }
+    val exception = assertThrows<ResponseStatusException> { userService.registerUser(request) }
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
-        verify(exactly = 0) { passwordEncoder.encode(any()) }
-        verify(exactly = 0) { userRepository.save(any()) }
-    }
+    assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
+    verify(exactly = 0) { passwordEncoder.encode(any()) }
+    verify(exactly = 0) { userRepository.save(any()) }
+  }
 }

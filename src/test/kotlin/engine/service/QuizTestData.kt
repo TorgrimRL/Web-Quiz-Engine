@@ -3,7 +3,6 @@ package engine.service
 import engine.dto.PostQuizRequest
 import engine.dto.QuizQuestionResponse
 import engine.dto.QuizResponse
-import engine.dto.RegistrationRequest
 import engine.entity.User
 
 object QuizTestData {
