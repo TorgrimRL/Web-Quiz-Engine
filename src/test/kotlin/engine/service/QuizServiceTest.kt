@@ -62,7 +62,7 @@ class QuizServiceTest {
   fun `addQuiz should save a correctly requested quiz`() {
     val post = QuizTestData.postQuizRequest()
     val email = "123@hotmail.com"
-    val user = QuizTestData.samleUser()
+    val user = QuizTestData.sampleUser() // Fixed typo here
 
     every { userRepository.findUserByEmail(any()) } returns user
     every { quizRepository.save(any()) } answers { firstArg<Quiz>() }

@@ -3,6 +3,7 @@ package engine.service
 import engine.dto.PostQuizRequest
 import engine.dto.QuizQuestionResponse
 import engine.dto.QuizResponse
+import engine.dto.RegistrationRequest
 import engine.entity.User
 
 object QuizTestData {
@@ -25,7 +26,7 @@ object QuizTestData {
           options = listOf("Robot", "Tea leaf", "Cup of coffee", "Bug"),
           answer = listOf(2))
 
-  fun samleUser(): User =
+  fun sampleUser(): User =
       User(
           null,
           "123@hotmail.com",
