@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: build/libs/*-SNAPSHOT.jar
+          path: build/libs/app.jar
           retention-days: 3
   docker-build:
     name: Docker build + smoke (PR)

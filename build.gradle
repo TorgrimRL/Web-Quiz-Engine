@@ -56,6 +56,9 @@ springBoot {
 tasks.named('bootJar') {
     archiveFileName = 'app.jar'
 }
+tasks.named('jar') {
+    enabled = false
+}
 
 
 dependencies {
