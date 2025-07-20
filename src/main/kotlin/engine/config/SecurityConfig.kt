@@ -22,6 +22,8 @@ class SecurityConfig(private val userDetailsService: UserDetailsService) {
         .csrf { it.disable() }
         .authorizeHttpRequests { auth ->
           auth
+              .requestMatchers("/actuator/health", "/actuator/health/**")
+              .permitAll()
               .requestMatchers(HttpMethod.POST, "/api/register", "/actuator/shutdown")
               .permitAll()
               .dispatcherTypeMatchers(DispatcherType.ERROR)
