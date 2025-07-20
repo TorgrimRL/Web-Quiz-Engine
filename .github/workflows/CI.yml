@@ -42,6 +42,53 @@ jobs:
           cache: gradle
       - name: Build & test
         run: ./gradlew --no-daemon clean build
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*-SNAPSHOT.jar
+          retention-days: 3
+  docker-build:
+    name: Docker build + smoke (PR)
+    needs: build
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      RUNTIME_PORT: 8080
+      HEALTH_PATH: /
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download boot jar artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: artifact
+      - name: Prepare jar
+        run: cp artifact/app.jar app.jar
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build image (PR, no push)
+        run: docker buildx build --platform linux/amd64 -t quiz-pr --load .
+      - name: Run & smoke test
+        run: |
+          docker run -d --rm --name quiz-ci -p 8080:${RUNTIME_PORT} quiz-pr
+          for i in {1..30}; do
+            STATUS=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080${HEALTH_PATH} || true)
+            if [ "$STATUS" = "200" ]; then
+              echo "Smoke OK"
+              break
+            fi
+            sleep 2
+          done
+            if [ "$STATUS" != "200" ]; then
+              echo "Smoke test failed (status=$STATUS)"
+              docker logs quiz-ci || true
+              exit 1
+            fi
+      - name: Stop
+        if: always()
+        run: docker stop quiz-ci || true
+
 
 
 
