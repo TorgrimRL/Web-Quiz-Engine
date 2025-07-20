@@ -1,7 +1,9 @@
 # your-repo-name/.github/workflows/CI.yml
 
 name: First Workflow
-
+env:
+  RUNTIME_PORT: 8080
+  HEALTH_PATH: /actuator/health
 on:
   push:
     branches:
@@ -72,19 +74,19 @@ jobs:
       - name: Run & smoke test
         run: |
           docker run -d --rm --name quiz-ci -p 8080:${RUNTIME_PORT} quiz-pr
-          for i in {1..30}; do
+          for i in {1..20}; do
             STATUS=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080${HEALTH_PATH} || true)
             if [ "$STATUS" = "200" ]; then
               echo "Smoke OK"
               break
             fi
-            sleep 2
+            sleep 1
           done
-            if [ "$STATUS" != "200" ]; then
-              echo "Smoke test failed (status=$STATUS)"
-              docker logs quiz-ci || true
-              exit 1
-            fi
+          if [ "$STATUS" != "200" ]; then
+            echo "Smoke test failed (status=$STATUS)"
+            docker logs quiz-ci || true
+            exit 1
+          fi
       - name: Stop
         if: always()
         run: docker stop quiz-ci || true
