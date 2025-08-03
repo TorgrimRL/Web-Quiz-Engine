@@ -1,5 +1,7 @@
 package engine.service
 
+import engine.dto.QuizQuestionResponse
+import engine.dto.QuizResponse
 import engine.entity.Quiz
 import engine.repository.QuizCompletionsRepository
 import engine.repository.QuizRepository
@@ -12,6 +14,7 @@ import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
@@ -28,23 +31,61 @@ class QuizServiceTest {
 
   @Test
   fun `getSampleQuiz should return the hardcoded sample response`() {
-    val expected = QuizTestData.expectedSampleQuiz()
-    val result = quizService.getSampleQuiz()
-    assertEquals(expected, result)
+    val title = "The Java Logo"
+    val question = "What is depicted on the Java logo?"
+    val alternatives = listOf("Robot", "Tea leaf", "Cup of coffee", "Bug")
+    Given(
+            thing =
+                QuizQuestionResponse(
+                    title = title,
+                    text = question,
+                    options = alternatives,
+                ),
+        )
+        .When { quizService.getSampleQuiz() }
+        .Then {
+          val expectedResult =
+              QuizQuestionResponse(
+                  title = title,
+                  text = question,
+                  options = alternatives,
+              )
+          assertEquals(expectedResult, it)
+        }
   }
 
   @Test
   fun `checkAnswer should response with correct answer`() {
-    val expected = QuizTestData.checkAnswerCorrectAnswer()
-    val result = quizService.checkAnswer(2)
-    assertEquals(expected, result)
+    val answer = 2
+    Given(answer)
+        .When { quizService.checkAnswer(answer) }
+        .Then { result ->
+          val expectedSuccess = true
+          val expectedFeedback = "Congratulations, you're right!"
+          val expectedResponse = QuizResponse(expectedSuccess, expectedFeedback)
+          assertAll(
+              { assertEquals(expectedResponse, result) },
+              { assertEquals(expectedSuccess, result.success) },
+              { assertEquals(expectedFeedback, result.feedback) },
+          )
+        }
   }
 
   @Test
   fun `checkAnswer response with wrong answer`() {
-    val expected = QuizTestData.checkAnswerWrongAnswer()
-    val result = quizService.checkAnswer(1)
-    assertEquals(expected, result)
+    val answer = 1
+    Given(answer)
+        .When { quizService.checkAnswer(answer) }
+        .Then { result ->
+          val expectedSuccess = false
+          val expectedFeedback = "Wrong answer! Please, try again."
+          val expectedResponse = QuizResponse(expectedSuccess, expectedFeedback)
+          assertAll(
+              { assertEquals(expectedResponse, result) },
+              { assertEquals(expectedSuccess, result.success) },
+              { assertEquals(expectedFeedback, result.feedback) },
+          )
+        }
   }
 
   @Test
@@ -79,3 +120,9 @@ class QuizServiceTest {
     assertSame(slot.captured, result)
   }
 }
+
+private fun <T> Given(thing: T): T = thing
+
+private inline fun <T, R> T.When(block: (T) -> R): R = this.let(block)
+
+private inline fun <T, R> T.Then(block: (T) -> R): R = this.let(block)
