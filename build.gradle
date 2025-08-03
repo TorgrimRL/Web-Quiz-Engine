@@ -48,15 +48,16 @@ tasks.withType(KotlinCompile).configureEach {
     }
 }
 
+
 springBoot {
     mainClass = 'engine.WebQuizEngineKt'
 }
 
-
 tasks.named('bootJar') {
-    manifest {
-        attributes 'Main-Class': 'engine.WebQuizEngineKt'
-    }
+    archiveFileName = 'app.jar'
+}
+tasks.named('jar') {
+    enabled = false
 }
 
 
